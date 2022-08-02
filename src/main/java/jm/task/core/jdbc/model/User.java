@@ -1,5 +1,7 @@
 package jm.task.core.jdbc.model;
 
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -58,5 +60,19 @@ public class User {
 
     public void setAge(Byte age) {
         this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("User{id= %d , name= '%s', lastName= '%s', age= %d}", id, name, lastName, age);
+        /*
+        "User{" +
+                "id= " + id +
+                ", name= '" + name +
+                "', lastName= '" + lastName +
+                "', age= " + age +
+                '}';
+
+         */
     }
 }
