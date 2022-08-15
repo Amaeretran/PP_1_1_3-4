@@ -6,15 +6,33 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class Util {
-    private static String dbURL = "jdbc:mysql://localhost/store";
-    private static String user = "admin";
-    private static String password = "admin";
-    //private Statement s;
+    private static final String dbURL = "jdbc:mysql://localhost/store";
+    private static final String user = "admin";
+    private static final String password = "admin";
+    private static Connection c;
+    public Statement s;
+    private int count = 0;
     // реализуйте настройку соеденения с БД
 
-    public void connect() throws SQLException {
-        try (Connection c = DriverManager.getConnection(dbURL, user, password)) {
-
+    public void connect() {
+        try {
+            c = DriverManager.getConnection(dbURL, user, password);
+            System.out.println("Соединение установлено.");
+            s = c.createStatement();
+        } catch (SQLException e) {
+            System.out.println("Не удалось установить соединение. Повторяю попытку...");
+            if (++count < 10) {
+                connect();
+            } else {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+    public static void closeConnect() {
+        try {
+            c.close();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
