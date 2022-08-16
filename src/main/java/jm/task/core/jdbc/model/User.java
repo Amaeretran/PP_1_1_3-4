@@ -1,7 +1,5 @@
 package jm.task.core.jdbc.model;
 
-import com.mysql.cj.x.protobuf.MysqlxDatatypes;
-
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -21,7 +19,7 @@ public class User {
     private Byte age;
 
     public User() {
-
+        this.age = 0;
     }
 
     public User(String name, String lastName, Byte age) {

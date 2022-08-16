@@ -12,15 +12,14 @@ public class Util {
     private static Connection c;
     public Statement s;
     private int count = 0;
-    // реализуйте настройку соеденения с БД
 
     public void connect() {
         try {
             c = DriverManager.getConnection(dbURL, user, password);
-            System.out.println("Соединение установлено.");
+            System.out.println("Connection successful.");
             s = c.createStatement();
         } catch (SQLException e) {
-            System.out.println("Не удалось установить соединение. Повторяю попытку...");
+            System.out.println("Connection ERROR. Retry connection...");
             if (++count < 10) {
                 connect();
             } else {
