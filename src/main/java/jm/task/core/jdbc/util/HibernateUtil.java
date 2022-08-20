@@ -163,6 +163,7 @@ public class HibernateUtil {
                 YourEntity.class
         };
         return Arrays.stream(entities).map(Class::getName).collect(Collectors.toList());
+   }
 
  */
     }
