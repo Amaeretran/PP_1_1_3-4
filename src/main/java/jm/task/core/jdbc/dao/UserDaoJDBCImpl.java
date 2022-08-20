@@ -2,22 +2,31 @@ package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import static jm.task.core.jdbc.util.Util.connect;
-import static jm.task.core.jdbc.util.Util.statement;
+import static jm.task.core.jdbc.util.Util.getConnection;
 
 public class UserDaoJDBCImpl implements UserDao {
+    private static final String CREATE = "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(30), lastName VARCHAR(30), age INTEGER NOT NULL)";
+    private static final String DROP = "DROP TABLE IF EXISTS users";
+    private static final String SAVE = "INSERT users (users.name, users.lastName, users.age) VALUES (?, ?, ?)";
+    private static final String REMOVE = "DELETE FROM users WHERE id = ?";
+    private static final String GET = "SELECT * FROM users";
+    private static final String CLEAN = "TRUNCATE users";
+    private static Connection connect;
+
     public UserDaoJDBCImpl() {
-        connect();
+        connect = getConnection();
     }
 
     public void createUsersTable() {
         try {
-            statement[0].execute();
+            connect.prepareStatement(CREATE).execute();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -25,7 +34,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         try {
-            statement[3].executeUpdate();
+            connect.prepareStatement(DROP).executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -33,10 +42,11 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         try {
-            statement[1].setString(1, name);
-            statement[1].setString(2, lastName);
-            statement[1].setByte(3, age);
-            statement[1].executeUpdate();
+            PreparedStatement save = connect.prepareStatement(SAVE);
+            save.setString(1, name);
+            save.setString(2, lastName);
+            save.setByte(3, age);
+            save.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -44,8 +54,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) {
         try {
-            statement[2].setLong(1, id);
-            statement[2].executeUpdate();
+            PreparedStatement remove = connect.prepareStatement(REMOVE);
+            remove.setLong(1, id);
+            remove.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
@@ -54,7 +65,7 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         try {
             List<User> userList = new LinkedList<>();
-            ResultSet resultSet = statement[4].executeQuery();
+            ResultSet resultSet = connect.prepareStatement(GET).executeQuery();
             while (resultSet.next()) {
                 byte age = (byte) resultSet.getInt("age");
                 String name = resultSet.getString("name");
@@ -72,7 +83,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try {
-            statement[5].executeUpdate();
+            connect.prepareStatement(CLEAN).executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e.getMessage());
         }
