@@ -1,5 +1,9 @@
 package jm.task.core.jdbc.util;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.mapping.Property;
+
 import java.sql.*;
 
 public class Util {
@@ -44,6 +48,9 @@ public class Util {
         }
     }
 
+    Configuration configuration = new Configuration();
+    Property first = new Property();
+    SessionFactory session;
 
 
 }
